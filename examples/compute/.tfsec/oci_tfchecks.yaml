@@ -1,0 +1,267 @@
+checks:
+  # - code: OCI-00001
+  #   description: Load balancer SSL certificate expiring soon
+
+  - code: OCI-00002
+    description: Bucket is public
+    impact: Anonymous access to content is available
+    resolution: Set visibility to "NoPublicAccess"
+    requiredTypes:
+      - resource
+    requiredLabels:
+      - oci_objectstorage_bucket
+    severity: CRITICAL
+    matchSpec:
+      name: access_type
+      action: isNone
+      value: ["ObjectRead", "ObjectReadWithoutList"]
+      ignoreUndefined: true
+    errorMessage: Bucket is public
+
+  # - code: OCI-00003
+  #   description: Database version is not sanctioned
+
+  # - code: OCI-00004
+  #   description: Database System version is not sanctioned
+
+  - code: OCI-00005
+    description: Instance is publicly accessible
+    impact: Anonymous access to instance is available
+    resolution: Set assign_public_ip to false.
+    requiredTypes:
+      - resource
+    requiredLabels:
+      - oci_core_instance
+    severity: CRITICAL
+    matchSpec:
+      name: create_vnic_details
+      action: notPresent
+      subMatch:
+        name: assign_public_ip
+        action: isNone
+        value: ["true"]
+      ignoreUndefined: true
+    errorMessage: Instance is publicly accessible
+
+  - code: OCI-00006
+    description: VCN Security list allows traffic to non-public port from all sources (0.0.0.0/0)
+    impact: VCN security list allows traffic from all sources (0.0.0.0/0) to non-public ports
+    resolution: Allow trafic from specific sources(e.g. 10.0.0.0/24)
+    requiredTypes:
+      - resource
+    requiredLabels:
+      - oci_core_security_list
+    severity: CRITICAL
+    matchSpec:
+      name: destination
+      action: isNone
+      value: ["0.0.0.0/0"]
+      ignoreUndefined: true
+    errorMessage: VCN Security list allows traffic to non-public port from all sources (0.0.0.0/0)
+
+  # FIXME: Delete Rule
+  # - code: OCI-00007
+  #   description: VCN Security list allows traffic to restricted port
+
+  # - code: OCI-00008
+  #   description: Scanned host has open ports
+
+  # - code: OCI-00009
+  # description: Scanned host has vulnerabilities
+
+  # - code: OCI-00010
+  #   description: Scanned container image has vulnerabilities
+
+  # TODO:
+  # - code: OCI-00011
+  #   description: Database System is publicly accessible
+
+  # - code: OCI-00012
+  #   description: Database System has public IP address
+
+  # - code: OCI-00013
+  #   description: Database is not backed up automatically
+
+  - code: OCI-00014
+    description: Instance has a public IP address
+    impact: Anonymous access to instance is available
+    resolution: Set assign_public_ip to false.
+    requiredTypes:
+      - resource
+    requiredLabels:
+      - oci_core_instance
+    severity: HIGH
+    matchSpec:
+      name: create_vnic_details
+      action: notPresent
+      subMatch:
+        name: assign_public_ip
+        action: isNone
+        value: ["true"]
+      ignoreUndefined: true
+    errorMessage: Instance has a public IP address
+
+  # TODO:
+  # - code: OCI-00015
+  #   description: NSG ingress rule contains disallowed IP/port
+
+  # - code: OCI-00016
+  #   description: Load balancer allows weak SSL communication
+
+  - code: OCI-00017
+    description: Load Balancer has public IP address
+    impact: A public IP address on a load balancer that is not intended to be used for publicly available content.
+    resolution: Private IP address is assigned to a Load Balancer.
+    requiredTypes:
+      - resource
+    requiredLabels:
+      - oci_load_balancer_load_balancer
+    severity: HIGH
+    matchSpec:
+      name: is_private
+      action: isNone
+      value: ["false"]
+      ignoreUndefined: true
+    errorMessage: Load Balancer has public IP address
+
+  # - code: OCI-00018
+  #   description: Data Safe is not enabled
+
+  # - code: OCI-00019
+  #   description: Database patch is not applied
+
+  # - code: OCI-00020
+  #   description: Block Volume is not attached
+
+  # - code: OCI-00021
+  #   description: Database system patch is not applied
+
+  # - code: OCI-00022
+  #   description: Instance is running without required Tags
+
+  # - code: OCI-00023
+  #   description: Key has not been rotated
+
+  # - code: OCI-00024
+  #   description: API key is too old
+
+  # - code: OCI-00025
+  #   description: IAM group has too many members
+
+  # - code: OCI-00026
+  #   description: Password is too old
+
+  # - code: OCI-00027
+  #   description: User does not have MFA enabled
+
+  # - code: OCI-00028
+  #   description: Policy gives too many privileges
+
+  # - code: OCI-00029
+  #   description: Tenancy admin privilege granted to group
+
+  - code: OCI-00030
+    description: VCN has no inbound Security List
+    impact: VCN does not have an inbound security list.
+    resolution: Create inbound security list.
+    requiredTypes:
+      - resource
+    requiredLabels:
+      - oci_core_security_list
+    severity: MEDIUM
+    matchSpec:
+      name: ingress_security_rules
+      action: isPresent
+    errorMessage: VCN has no inbound Security List
+
+  # - code: OCI-00031
+  #   description: NSG egress rule contains disallowed IP/port
+
+  # - code: OCI-00032
+  #   description: Load balancer allows weak cipher suite
+
+  # - code: OCI-00033
+  #   description: IAM Auth token is too old
+
+  # - code: OCI-00034
+  #   description: IAM Customer secret key is too old
+
+  # - code: OCI-00035
+  #   description: Database is not registered in Data Safe
+
+  # - code: OCI-00036
+  #   description: Instance is running an Oracle public image
+
+  - code: OCI-00037
+    description: Load balancer has no back-end set
+    impact: Load balancer has no back-end set
+    requiredTypes:
+      - resource
+    requiredLabels:
+      - oci_load_balancer_load_balancer
+    severity: LOW
+    matchSpec:
+      name: backend_set_name
+      action: notPresent
+    errorMessage: Load balancer has no back-end set
+
+  # - code: OCI-00038
+  #   description: IAM group has too few members
+  # - code: OCI-00039
+  #   description: User has API keys
+  # - code: OCI-00040
+  #   description: Password policy does not meet complexity requirements
+
+  - code: OCI-00041
+    description: VCN has InternetGateway attached
+    impact: VCN has InternetGateway attached
+    requiredTypes:
+      - resource
+    requiredLabels:
+      - oci_core_internet_gateway
+    severity: LOW
+    matchSpec:
+      name: vcn_id
+      action: notPresent
+    errorMessage: VCN has InternetGateway attached
+
+  # - code: OCI-00042
+  #   description: Resource is not tagged appropriately
+
+  # - code: OCI-00043
+  #   description: Instance is not running an Oracle public image
+
+  - code: OCI-00044
+    description: VCN has Local Peering Gateway attached
+    impact: VCN has Local Peering Gateway attached
+    requiredTypes:
+      - resource
+    requiredLabels:
+      - oci_core_local_peering_gateway
+    severity: LOW
+    matchSpec:
+      name: vcn_id
+      action: notPresent
+    errorMessage: VCN has Local Peering Gateway attached
+
+  - code: OCI-00045
+    description: Load balancer has no inbound rules or listeners
+    impact: Load balancer has no inbound rules or listeners
+    requiredTypes:
+      - resource
+    requiredLabels:
+      - oci_load_balancer_load_balancer
+    severity: LOW
+    matchSpec:
+      name: routing_policies
+      action: isPresent
+    errorMessage: VCN has Local Peering Gateway attached
+
+  # - code: OCI-00046
+  #   description: Object Storage bucket is encrypted with Oracle-managed key
+
+  # - code: OCI-00047
+  #   description: Block Volume is encrypted with Oracle-managed key
+
+  # - code: OCI-00048
+  #   description: VNIC without associated network security group
