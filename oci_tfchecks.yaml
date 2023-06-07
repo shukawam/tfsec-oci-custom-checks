@@ -16,7 +16,7 @@ checks:
       action: isNone
       value: ["ObjectRead", "ObjectReadWithoutList"]
       ignoreUndefined: true
-    errorMessage: Bucket is public
+    errorMessage: Bucket visibility is public
 
   # - code: OCI-00003
   #   description: Database version is not sanctioned
@@ -104,7 +104,6 @@ checks:
       ignoreUndefined: true
     errorMessage: Instance has a public IP address
 
-  # TODO:
   # - code: OCI-00015
   #   description: NSG ingress rule contains disallowed IP/port
 
